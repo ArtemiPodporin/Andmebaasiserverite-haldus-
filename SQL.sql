@@ -10,7 +10,7 @@ USE PodporinLOGITpv23;
 
 --tabeli loomine 
 CREATE TABLE inimene(
-inineneID int Primary Key identity(1,1), 
+inineneID int Primary Key auto_increment, 
 nimi varchar(50) unique, 
 synniag date,
 telefon char (12),
@@ -48,7 +48,7 @@ where inimeneID=3;
 --tabel elukoht 
 
 CREATE TABLE elukoht(
-elukohtID int primary key identity(1,1),
+elukohtID int primary key auto_increment,
 elukoht varchar(50) unique,
 maakond varchar(50)
 );
@@ -61,7 +61,7 @@ values ('Tartuma', 'Harjumaa'),
 
 
 
-ter table inimene add elukohtID int;
+Alter table inimene add elukohtID int;
 select * from inimene;
 
 Alter table inimene add constraint fk_elukoht
@@ -72,7 +72,7 @@ select * from elukoht;
 
 
 CREATE TABLE auto(
-autoID int primary key identity(1,1),
+autoID int primary key auto_increment,
 autoNR varchar(50) unique,
 mudell varchar(50),
 mark varchar(50),
