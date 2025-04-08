@@ -1,10 +1,9 @@
 --kommentaar 
---SQL SERVER Managment Stuudio
---Server Name: (localdb)\mssqllocaldb
---Authentification 2 tüüpi:
---1. Windows Aunt - localdb admini õigused
---2. SQL Server Auth - kontrollida varem tehtu
-
+--Xampp control panel
+--Server Name: localhost - 127.0.0.1
+--Authentification :
+-- kasutaja root
+-- parool: ei ole
 
 CREATE DATABASE PodporinLOGITpv23;
 USE PodporinLOGITpv23;
