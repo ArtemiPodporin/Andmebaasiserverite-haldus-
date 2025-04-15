@@ -1,1 +1,46 @@
+USE PodporinLOGITpv23;
+CREATE DATABASE PodporinLOGITpv23;
 
+
+use proceduurLoGIT;
+
+CREATE TABLE FILMID(
+filmID int primary key identity(1,1),
+filmNimi varchar(30) unique,
+filmPikkus int,
+rezissor varchar(30)
+);
+
+
+
+SELECT * from filmid
+
+
+INSERT INTO filmid(filmNimi, FilmPikkus, rezissor)
+VALUES ('Minecraft', 120, 'Jared Hess');
+
+CREATE PROCEDURE lisaFilm
+@nimi varchar(30),
+@pikkus int,
+@rezissor varchar(30)
+AS
+BEGIN
+INSERT INTO filmid(filmNimi, FilmPikkus, rezissor)
+VALUES (@nimi, @pikkus, @rezissor);
+SELECT * from filmid;
+END;
+
+EXEC lisaFilm 'Bob ja Bobek', 120, 'test';
+
+
+--mis näitab filmid esimese täha järgi
+create procedure filmid1taht
+@taht char(1)
+as
+begin
+select * from filmid
+where filmNimi like concat(@taht,'B%');
+end
+
+--kutse
+exec filmid1taht 'M';
