@@ -73,3 +73,18 @@ EXEC tabeliMuudatus @tegevus='drop', @tabelinimi='filmid', @veerunimi='test';
 
 
 DROP PROCEDURE IF EXISTS rezisoorid;
+
+Alter
+DELIMITER //
+
+CREATE PROCEDURE add_rezisoor(
+    IN eesnimi VARCHAR(50),
+    IN perekonnanimi VARCHAR(50),
+    IN synniaasta INT
+)
+BEGIN
+    INSERT INTO rezisoor (eesnimi, perekonnanimi, synniaasta)
+    VALUES (eesnimi, perekonnanimi, synniaasta);
+END //
+
+DELIMITER ;
