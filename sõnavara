@@ -4,4 +4,13 @@ Haldus -обслуживание
 Andmedaaide haldussüsteemid - программы для работы с БД -  MS SQL server 
 
 ---------------------------------
-tabel
+tabel / таблица
+rida / read -строка
+veerg /veerud - столбец/столбцы
+rida = kirjed - записи
+veerg = väli -поля
+päring - запросы -query
+käivita päring - запусти запрос - execute query
+värskenda = uuenda - обновить
+kustuta - стирать
+loo - создать
