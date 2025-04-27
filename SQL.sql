@@ -99,3 +99,33 @@ foreign key (autoID) references auto (autoID);
 INSERT INTO inimene (nimi, synniag, telefon, pikkus, opilaskodu, autoID)
 VALUES
 ('Mati Kaskkk', '2041-12-30', '1261536', 94.5, 0, 2);
+
+
+--Обновление информации о режиссере
+DELIMITER //
+
+CREATE PROCEDURE UpdateDirector(
+    IN directorID INT,
+    IN newFirstName VARCHAR(25),
+    IN newLastName VARCHAR(25)
+)
+BEGIN
+    UPDATE rezisoor 
+    SET eesnimi = newFirstName, 
+        perenimi = newLastName 
+    WHERE rezisoorID = directorID;
+END //
+
+DELIMITER ;
+
+
+--Добавление нового столбца (года рождения) в таблицу режиссеров
+DELIMITER //
+
+CREATE PROCEDURE AddBirthYearColumn()
+BEGIN
+    ALTER TABLE rezisoor 
+    ADD COLUMN synniaasta INT AFTER perenimi;
+END //
+
+DELIMITER ;
