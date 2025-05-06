@@ -35,3 +35,10 @@ inserted.toodeNIMetus
 from inserted;
 
 drop trigger toodeLisamine;
+
+--kontroll
+insert into toode(toodeNIMetus,toodeHind )
+values ('Fanta', 2.20);
+
+select * from toode;
+select * from logi;
