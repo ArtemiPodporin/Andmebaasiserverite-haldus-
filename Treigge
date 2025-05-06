@@ -42,3 +42,49 @@ values ('Fanta', 2.20);
 
 select * from toode;
 select * from logi;
+
+
+
+
+--delete triger, mis jälgib toode kustutamine tabelis
+create trigger toodeKustutamine
+on toode
+for delete
+as
+insert into logi(tegevus, kuupaev, andmed )
+select 'toode on lisatud',
+getdate(),
+concat (deleted.toodeNIMetus,
+' | tegi kasutaja', SYSTEM_USER)
+from deleted;
+
+--kontroll
+delete from toode 
+where toodeID=3 
+
+select * from toode;
+select * from logi;
+
+
+create trigger toodeUuendameni
+on toode
+for update
+as
+insert into logi(tegevus, kuupaev, andmed )
+select 'toode on uuendatud',
+getdate(),
+concat ('Vana andmed  - ', deleted.toodeNIMetus,', ', deleted.toodeHind,
+'Uued andmed  - ', inserted.toodeNIMetus,', ', inserted.toodeHind, 
+' | tegi kasutaja', SYSTEM_USER)
+from deleted inner join inserted
+on deleted.toodeID=inserted.toodeID;
+
+
+--kontroll
+
+update toode set toodeHind=4.00
+where toodeNIMetus= 'Fanta'
+
+
+select * from toode;
+select * from logi;
