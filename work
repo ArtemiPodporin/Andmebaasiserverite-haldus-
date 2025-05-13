@@ -1,0 +1,135 @@
+CREATE DATABASE PodporinLOGITpv;
+
+
+--tabel1
+create table firma (
+	firmaID int not null primary key identity(1,1),
+	firmanimi varchar(20) unique,
+	address varchar(20),
+	telefon varchar(20)
+);
+
+select * from firma;
+
+INSERT INTO firma (firmanimi, address, telefon) VALUES
+('Alpha OÜ', 'Tallinn', '5551234'),
+('Beta AS', 'Tartu', '5555678'),
+('Gamma OÜ', 'Narva', '5558765'),
+('Delta OÜ', 'Pärnu', '5554321'),
+('Epsilon AS', 'Viljandi', '5552468');
+
+
+--tabel2
+CREATE TABLE praktikajuhendaja (
+    praktikajuhendajaID int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    eesnimi varchar(50),
+    perekonnanimi varchar(50),
+    synniaeg date,
+    telefon varchar(20)
+);
+
+select * from praktikajuhendaja;
+
+INSERT INTO praktikajuhendaja (eesnimi, perekonnanimi, synniaeg, telefon) VALUES
+('Mari', 'Tamm', '1980-04-15', '5111111'),
+('Jüri', 'Saar', '1975-12-20', '5222222'),
+('Liis', 'Kask', '1988-07-07', '5333333'),
+('Karl', 'Mets', '1990-03-25', '5444444'),
+('Anne', 'Põld', '1983-10-05', '5555555');
+
+
+--tabel3
+
+CREATE TABLE praktikabaas (
+    praktikabaasID int NOT NULL PRIMARY KEY IDENTITY(1,1),
+    firmaID int,
+    praktikatingimused varchar(20),
+    arvutiprogramm varchar(20),
+    juhendajaID int,
+    FOREIGN KEY (firmaID) REFERENCES firma(firmaID),
+    FOREIGN KEY (juhendajaID) REFERENCES praktikajuhendaja(praktikajuhendajaID)
+);
+
+select * from praktikabaas;
+
+
+INSERT INTO praktikabaas (firmaID, praktikatingimused, arvutiprogramm, juhendajaID) VALUES
+(1, 'Kontoritöö', 'Excel', 1),
+(2, 'Andmesisestus', 'Access', 2),
+(3, 'IT tugi', 'Linux', 3),
+(4, 'Turundus', 'Photoshop', 4),
+(5, 'Arendus', 'Visual Studio', 5);
+
+
+--treigger
+
+--1
+CREATE TABLE Praktikabaas_logi (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    kasutaja VARCHAR(50),
+    aeg DATETIME,
+    tegevus VARCHAR(50),
+    andmed TEXT
+);
+
+
+
+
+--2
+CREATE TRIGGER  praktikabaasLisamine
+ON praktikabaas
+FOR INSERT
+AS
+INSERT INTO Praktikabaas_logi (kasutaja, aeg, tegevus, andmed)
+SELECT  GETDATE(),
+'praktikabaas - LISAMINE', 
+CONCAT('PraktikabaasID = ', inserted.praktikabaasID, ', ' ,'FirmaNimi - ', firma.firmanimi, ', ' ,'JuhendajaEesnimi - ', praktikajuhendaja.eesnimi, 
+', ', 'Lisatud arvutiprogramm - ', inserted.arvutiprogramm, ', ', 'Lisatud praktikatingimused - ', inserted.praktikatingimused),
+SYSTEM_USER
+FROM inserted inner join firma on firma.firmaID=inserted.firmaID
+inner join praktikajuhendaja on praktikajuhendaja.praktikajuhendajaID=inserted.juhendajaID;
+
+
+drop trigger praktikabaasLisamine;
+
+select * from firma;
+select * from praktikajuhendaja;
+select * from praktikabaas;
+select * from Praktikabaas_logi;
+
+INSERT INTO praktikajuhendaja (eesnimi, perekonnanimi, synniaeg, telefon)
+VALUES ('Test', 'Inimene', '2050-01-01', '5559999');
+
+UPDATE praktikabaas
+SET praktikatingimused = 'Uus tingimus', arvutiprogramm = 'Excel'
+WHERE praktikabaasID = 1;
+
+SELECT * FROM Praktikabaas_logi;
+
+--3
+ALTER TRIGGER [dbo].[PraktikabaasUPDATE]
+ON [dbo].[praktikabaas]
+FOR UPDATE
+AS
+INSERT INTO Praktikabaas_logi(tegevus, aeg, andmed, kasutaja)
+SELECT 
+    'praktikabaas on uuendatud',
+    GETDATE(),
+    CONCAT(
+        'praktikabaasID = ', deleted.praktikabaasID, 
+        ', FirmaNimi = ', f2.firmanimi, 
+        ', JuhendajaEesnimi = ', p2.eesnimi,
+        ', Vana arvutiprogramm = ', deleted.arvutiprogramm, 
+        ', Vanad praktikatingimused = ', deleted.praktikatingimused,
+        ', Uus FirmaNimi = ', f1.firmanimi,
+        ', Uus JuhendajaEesnimi = ', p1.eesnimi,
+        ', Uus arvutiprogramm = ', inserted.arvutiprogramm, 
+        ', Uued praktikatingimused = ', inserted.praktikatingimused
+    ),
+    SYSTEM_USER
+FROM deleted
+INNER JOIN inserted ON deleted.praktikabaasID = inserted.praktikabaasID
+INNER JOIN firma f1 ON f1.firmaID = inserted.firmaID
+INNER JOIN firma f2 ON f2.firmaID = deleted.firmaID
+INNER JOIN praktikajuhendaja p1 ON p1.praktikajuhendajaID = inserted.juhendajaID
+INNER JOIN praktikajuhendaja p2 ON p2.praktikajuhendajaID = deleted.juhendajaID;
