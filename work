@@ -133,3 +133,52 @@ INNER JOIN firma f1 ON f1.firmaID = inserted.firmaID
 INNER JOIN firma f2 ON f2.firmaID = deleted.firmaID
 INNER JOIN praktikajuhendaja p1 ON p1.praktikajuhendajaID = inserted.juhendajaID
 INNER JOIN praktikajuhendaja p2 ON p2.praktikajuhendajaID = deleted.juhendajaID;
+
+
+
+
+
+
+
+
+20.05
+CREATE DATABASE PodporinLOGITpv23;
+
+--opilased
+create table opilased ( opilasedID INT, nimi VARCHAR(50),
+perekonnanimi VARCHAR(50), klass VARCHAR(3),
+synnipaev DATE
+);
+
+select * from opilased;
+
+insert into opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) values (1, 'Thibaut', 'Orehead', '11A', '2/6/2025');
+insert into opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) values (2, 'Anette', 'Winthrop', '118', '10/26/2024'); 
+insert into opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) values (3, 'Orly', 'Feragh', '108', '4/9/2025');
+insert into opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) values (4, 'Merralee', 'Worham', '11A', '3/5/2025'); 
+insert into opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) values (5, 'Victoir', 'Ferriere', '118', '10/13/2024');
+insert into opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) values (6, 'Maud', 'Jumont', '118', '11/28/2024'); 
+insert into opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) values (7, 'Dalia', 'McCarver', '10A', '6/16/2024');
+insert into opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) values (8, 'Antony', 'Sekulla', '11A', '10/29/2024'); 
+insert into opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) values (9, 'Mahala', 'Jurick', '10', '7/23/2024');
+insert into opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) values (10, 'Milli', 'Spadari', '10A', '11/20/2024');
+
+--oppetund
+create table oppetund ( oppetundID INT,
+tundinimetus VARCHAR(11), alustada VARCHAR(50),
+loppu VARCHAR(50)
+);
+
+select * from oppetund;
+
+insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (1, 'Matemaatika', '3:42 PM', '9:22 PM'); 
+insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (2, 'Matemaatika', '5:16 PM', '6:53 PM');
+insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (3, 'Matemaatika', '2:23 PM', '7:22 PM'); 
+insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (4, 'Keemia', '3:56 PM', '5:50 PM');
+insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (5, 'Keemia', '4:31 PM', '10:04 PM'); 
+insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (6, 'Matemaatika', '9:03 AM', '10:08 PM'); 
+insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (7, 'Matemaatika', '1:37 PM', '7:16 PM'); 
+insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (8, 'Matemaatika', '4:37 PM', '6:40 PM');
+insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (9, 'Füüsika', '12:36 PM', '7:00 PM');
+insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (10, 'Füüsika', '8:27 PM', '5:59 PM');
+
