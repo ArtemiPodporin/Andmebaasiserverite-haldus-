@@ -182,3 +182,91 @@ insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (8, 'Mat
 insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (9, 'Füüsika', '12:36 PM', '7:00 PM');
 insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values (10, 'Füüsika', '8:27 PM', '5:59 PM');
 
+
+CREATE TABLE logi (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    tegevus NVARCHAR(100),
+    andmed NVARCHAR(MAX),
+    kasutaja NVARCHAR(100),
+    aeg DATETIME DEFAULT GETDATE()
+);
+
+
+-- INSER opilased
+CREATE TRIGGER opilased_insert_trigger
+ON opilased
+AFTER INSERT
+AS
+BEGIN
+INSERT INTO logi (tegevus, andmed, kasutaja)
+SELECT 'OPILASED INSERT', 
+CONCAT('ID: ', opilasedID, ' | Nimi: ', nimi, ' ', perekonnanimi, ' | Klass: ', klass, ' | Sünnipäev: ', CONVERT(VARCHAR, synnipaev, 104)),
+SUSER_SNAME()
+FROM inserted;
+END;
+
+INSERT INTO opilased (nimi, perekonnanimi, klass, synnipaev)
+VALUES ('Test', 'User', '10A', '2005-01-01');
+
+
+-- UPDATE opilased
+CREATE TRIGGER opilased_update_trigger
+ON opilased
+AFTER UPDATE
+AS
+BEGIN
+INSERT INTO logi (tegevus, andmed, kasutaja)
+SELECT 'OPILASED UPDATE', 
+CONCAT('ID: ', i.opilasedID, 
+' | Vanad andmed: ', d.nimi, ' ', d.perekonnanimi, ' (', d.klass, ') ', CONVERT(VARCHAR, d.synnipaev, 104),
+' | Uued andmed: ', i.nimi, ' ', i.perekonnanimi, ' (', i.klass, ') ', CONVERT(VARCHAR, i.synnipaev, 104)),
+SUSER_SNAME()
+FROM inserted i
+JOIN deleted d ON i.opilasedID = d.opilasedID;
+END;
+
+-- DELETE opilased
+
+CREATE TRIGGER opilased_delete_trigger
+ON opilased
+AFTER DELETE
+AS
+BEGIN
+INSERT INTO logi (tegevus, andmed, kasutaja)
+SELECT 'OPILASED DELETE', 
+CONCAT('ID: ', opilasedID, ' | Nimi: ', nimi, ' ', perekonnanimi, ' | Klass: ', klass, ' | Sünnipäev: ', CONVERT(VARCHAR, synnipaev, 104)),
+SUSER_SNAME()
+FROM deleted;
+END;
+
+ 
+-- INSERT  oppetund
+CREATE TRIGGER oppetund_insert_trigger
+ON oppetund
+AFTER INSERT
+AS
+BEGIN
+INSERT INTO logi (tegevus, andmed, kasutaja)
+SELECT 'OPPETUND INSERT', 
+CONCAT('ID: ', oppetundID, ' | Tund: ', tundinimetus, ' | Aeg: ', CONVERT(VARCHAR, alustada, 108), '-', CONVERT(VARCHAR, loppu, 108)),
+SUSER_SNAME()
+FROM inserted;
+END;
+
+
+--UPDATE oppetund
+
+
+CREATE TRIGGER oppetund_UPDATE_trigger
+ON oppetund
+AFTER UPDATE
+AS
+BEGIN INTO logi (tegevus, andmed, kasutaja)
+SELECT 'OPPETUND UPDATE',
+CONCAT('ID: ', i.id, 
+' | Vanad andmed: ', d.tundinimetus, ' (', CONVERT(VARCHAR, d.alustada, 108), '-', CONVERT(VARCHAR, d.loppu, 108), ')',
+' | Uued andmed: ', i.tundinimetus, ' (', CONVERT(VARCHAR, i.alustada, 108), '-', CONVERT(VARCHAR, i.loppu, 108), ')'),
+SUSER_SNAME()
+    FROM inserted i
+    JOIN deleted d ON i.id = d.id;
+END; 
