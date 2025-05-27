@@ -270,3 +270,78 @@ SUSER_SNAME()
     FROM inserted i
     JOIN deleted d ON i.id = d.id;
 END; 
+
+
+
+
+-----------------------------------------------------
+CREATE DATABASE PodporinLOGITpv23;
+
+USE PodporinLOGITpv23;
+
+
+
+INSERT INTO opetaj (OpenjaID, OpenjaNimi, Auto) VALUES
+(1, 'Mari Tamm', 'Toyota'),
+(2, 'Jüri Saar', 'BMW'),
+(3, 'Kati Kuusk', 'Audi'),
+(4, 'Peeter Mägi', 'Volvo')
+
+select * from opetaj;
+
+
+INSERT INTO klasss (KlassID, KlassNimi, OpetajaID, OpilaneArv) VALUES
+(1, '9A', 1, 24),
+(2, '10B', 2, 26),
+(3, '11A', 3, 22),
+(4, '12C', 4, 20)
+
+select * from  klasss;
+
+
+INSERT INTO Opilanee (OpineID, Opilane, KlassID) VALUES
+(1, 'Anna Mets', 1),
+(2, 'Karl Tamm', 2),
+(3, 'Laura Saar', 3),
+(4, 'Marko Kuusk', 4)
+
+select * from  Opilanee;
+
+
+
+
+
+
+
+
+CREATE TRIGGER trg_Klass_Insert
+ON klasss
+AFTER INSERT
+AS
+BEGIN
+INSERT INTO logi (Kasutaja, Tegevus, Andmed)
+ SELECT SYSTEM_USER, 'Klass lisamine', 
+CONCAT('KlassID=', KlassID, ', KlassNimi=', KlassNimi)
+FROM inserted;
+END;
+
+
+CREATE TRIGGER trg_Klass_Delete
+ON klasss
+AFTER DELETE
+AS
+BEGIN
+INSERT INTO logi (Kasutaja, Tegevus, Andmed)
+SELECT SYSTEM_USER, 'Klass kustutamine', 
+CONCAT('KlassID=', KlassID, ', KlassNimi=', KlassNimi)
+FROM deleted;
+END;
+
+select * from  logi;
+
+
+INSERT INTO opetaj VALUES (1, 'Mari Tamm', 'Toyota');
+
+INSERT INTO klasss VALUES (1, '9A', 1, 25);
+
+INSERT INTO Opilanee VALUES (1, 'Matemaatika', 1);
