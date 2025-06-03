@@ -398,5 +398,18 @@ insert into oppetund (oppetundID, tundinimetus, alustada, loppu) values	(9, 'Fü
 
 
 
-GRANT SELECT, UPDATE ON opilased TO kasutaja;
-GRANT INSERT, DELETE ON oppetund TO kasutaja;
+
+GRANT UPDATE, SELECT ON oppetund TO kasutaja;
+GRANT INSERT, SELECT ON opilased TO kasutaja;
+
+
+
+kutsuta:
+select * from opilased;
+
+
+INSERT INTO opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) 
+VALUES (12, 'Artemi', 'Podporin', '12A', '2/9/2006');
+
+
+update opilased set klass = 11;
