@@ -88,3 +88,18 @@ where toodeNIMetus= 'Fanta'
 
 select * from toode;
 select * from logi;
+
+create table logi(
+id int primary key identity(1,1),
+tegevus varchar(35),
+andmed text
+kasutaja varchar(30),
+aeg date, 
+);
+
+
+create trigger lisamised;
+on opilased
+for INSERT
+AS
+INSERT INTO logi ()
