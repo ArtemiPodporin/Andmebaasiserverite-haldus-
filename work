@@ -413,3 +413,11 @@ VALUES (12, 'Artemi', 'Podporin', '12A', '2/9/2006');
 
 
 update opilased set klass = 11;
+
+
+INSERT INTO opilased (opilasedID, nimi, perekonnanimi, klass, synnipaev) 
+VALUES (11, 'Test', 'Student', '10B', '2005-05-15');
+
+UPDATE opilased SET nimi = 'Test2', klass = '11B' WHERE opilasedID = 11;
+
+DELETE FROM opilased WHERE opilasedID = 11;
