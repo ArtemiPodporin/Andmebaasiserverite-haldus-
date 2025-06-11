@@ -429,12 +429,13 @@ DELETE FROM opilased WHERE opilasedID = 11;
 CREATE DATABASE PodporinLOGITpv;
 
 
-
 CREATE TABLE opilane (
     opilaneID INT PRIMARY KEY,
     opilaneNimi VARCHAR(100),
     Auto VARCHAR(100)
 );
+
+select * from opilane;
 
 INSERT INTO opilane(opilaneID, opilaneNimi, Auto) 
 VALUES (1, 'Main Production Line', 'AutoX-2000'),
@@ -444,13 +445,17 @@ VALUES (1, 'Main Production Line', 'AutoX-2000'),
 (5, 'Maintenance Bay', 'ServiceBot-500');
 
 
+
 CREATE TABLE klass (
     klassID INT PRIMARY KEY,
     klassNimi VARCHAR(100),
     openiaID INT,
     optiaseXvv VARCHAR(100),
-	FOREIGN KEY (opilaneID) REFERENCES opilane(opilaneID)
+	FOREIGN KEY (openiaID) REFERENCES opilane(opilaneID)
 );
+
+select * from klass;
+
 
 INSERT INTO klass (klassID, klassNimi, openiaID, optiaseXvv) 
 VALUES (1, 'Primary Welding Group', 1, 'Xvv-Weld1'),
@@ -467,6 +472,9 @@ CREATE TABLE opetaja (
     FOREIGN KEY (klassID) REFERENCES klass(klassID)
 );
 
+select * from opetaja;
+
+
 INSERT INTO opetaja (optiaseID, optiaseNimi, klassID)
 VALUES (1, 'Welding Optimization v2.1', 1),
 (2, 'Precision Calibration', 1),
@@ -476,6 +484,75 @@ VALUES (1, 'Welding Optimization v2.1', 1),
 
 
 
-GRANT SELECT, INSERT ON PodporinLOGITpv.klass TO opilaneArtemi;
-GRANT SELECT, INSERT ON PodporinLOGITpv.openia TO opilaneArtemi;
-GRANT SELECT, INSERT ON PodporinLOGITpv.optiase TO opilaneArtemi;
+GRANT SELECT, INSERT ON klass TO opilane1;
+GRANT SELECT, INSERT ON opetaja TO opilane1;
+GRANT SELECT, INSERT ON opilane TO opilane1;
+
+
+
+
+
+
+CREATE TABLE logi (
+    id INT PRIMARY KEY,
+    kasutaja VARCHAR(100),
+    kumpeev DATE,
+    tegenva VARCHAR(100),
+    andmedi TEXT
+);
+
+
+select * from logi;
+
+
+--int
+CREATE TRIGGER klass_int
+ON klass
+AFTER INSERT
+AS
+BEGIN
+INSERT INTO logi (kasutaja, tegenva, andmedi)
+SELECT 
+CURRENT_USER, 'Uus klass lisatud',
+CONCAT('ID: ', inserted.klassID, ', Nimi: ', inserted.klassNimi, ', OpilaneID: ', inserted.openiaID, ', OptiaseXvv: ', inserted.optiaseXvv)
+FROM inserted;
+END;
+	
+
+
+--update
+
+CREATE TRIGGER klass_uud
+ON klass
+AFTER UPDATE
+AS
+BEGIN
+INSERT INTO logi (kasutaja, tegenva, andmedi)
+SELECT 
+CURRENT_USER, 'Klassi andmed uuendatud',
+CONCAT('ID: ', inserted.klassID, ', Vanad andmed: ', deleted.klassNimi, ' ', deleted.openiaID, ' ', deleted.optiaseXvv, ', Uued andmed: ', inserted.klassNimi, ' ', inserted.openiaID, ' ', inserted.optiaseXvv)
+FROM inserted
+JOIN deleted ON inserted.klassID = deleted.klassID
+WHERE inserted.klassNimi != deleted.klassNimi 
+OR inserted.openiaID != deleted.openiaID
+OR inserted.optiaseXvv != deleted.optiaseXvv;
+END;
+
+
+--delete
+
+CREATE TRIGGER klass_delete
+ON klass
+AFTER DELETE
+AS
+BEGIN
+INSERT INTO logi (kasutaja, tegenva, andmedi)
+SELECT 
+CURRENT_USER, 'Klass kustutatud',
+CONCAT('ID: ', deleted.klassID, ', Nimi: ', deleted.klassNimi)
+FROM deleted;
+END;
+
+
+INSERT INTO klass (klassID, klassNimi, openiaID, optiaseXvv) 
+VALUES (101, 'Temp Class', 1, 'Xvv-Temp');
