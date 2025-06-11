@@ -421,3 +421,61 @@ VALUES (11, 'Test', 'Student', '10B', '2005-05-15');
 UPDATE opilased SET nimi = 'Test2', klass = '11B' WHERE opilasedID = 11;
 
 DELETE FROM opilased WHERE opilasedID = 11;
+
+
+---------------------------------------------------
+
+
+CREATE DATABASE PodporinLOGITpv;
+
+
+
+CREATE TABLE opilane (
+    opilaneID INT PRIMARY KEY,
+    opilaneNimi VARCHAR(100),
+    Auto VARCHAR(100)
+);
+
+INSERT INTO opilane(opilaneID, opilaneNimi, Auto) 
+VALUES (1, 'Main Production Line', 'AutoX-2000'),
+(2, 'Secondary Assembly', 'AutoY-1500'),
+(3, 'Quality Control Station', 'AutoZ-3000'),
+(4, 'Packaging Unit', 'AutoP-1000'),
+(5, 'Maintenance Bay', 'ServiceBot-500');
+
+
+CREATE TABLE klass (
+    klassID INT PRIMARY KEY,
+    klassNimi VARCHAR(100),
+    openiaID INT,
+    optiaseXvv VARCHAR(100),
+	FOREIGN KEY (opilaneID) REFERENCES opilane(opilaneID)
+);
+
+INSERT INTO klass (klassID, klassNimi, openiaID, optiaseXvv) 
+VALUES (1, 'Primary Welding Group', 1, 'Xvv-Weld1'),
+(2, 'Assembly Robots', 2, 'Xvv-Assm2'),
+(3, 'Inspection Units', 3, 'Xvv-Ins3'),
+(4, 'Packaging Team', 4, 'Xvv-Pack4'),
+(5, 'Service Robots', 5, 'Xvv-Serv5');
+
+
+CREATE TABLE opetaja (
+    optiaseID INT PRIMARY KEY,
+    optiaseNimi VARCHAR(100),
+    klassID INT,
+    FOREIGN KEY (klassID) REFERENCES klass(klassID)
+);
+
+INSERT INTO opetaja (optiaseID, optiaseNimi, klassID)
+VALUES (1, 'Welding Optimization v2.1', 1),
+(2, 'Precision Calibration', 1),
+(3, 'Assembly Speed Boost', 2),
+(4, 'Error Reduction', 2),
+(5, 'High-Res Scanning', 3);
+
+
+
+GRANT SELECT, INSERT ON PodporinLOGITpv.klass TO opilaneArtemi;
+GRANT SELECT, INSERT ON PodporinLOGITpv.openia TO opilaneArtemi;
+GRANT SELECT, INSERT ON PodporinLOGITpv.optiase TO opilaneArtemi;
